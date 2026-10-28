@@ -45,3 +45,10 @@ You must accept the GitHub invitation to this repo before cloning.
 - Before starting a new branch, run `git checkout main` and `git pull`.
 - After pulling, run `python manage.py migrate` in case teammates changed the models.
 - If you install a new package, run `pip freeze > requirements.txt` and commit the updated file.
+
+
+## Team
+
+- Birhane Telayneh Kefyalew (team lead)
+- Asakhe Sotyato
+- Ridwanullah Akinkunmi Abdur-Rasheed
