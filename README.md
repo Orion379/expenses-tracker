@@ -1,2 +1,2 @@
-# expenses-tracker
+# Expenses-Tracker
 Team project: expense tracker built with Django, with expense logging, categories, and spending summaries.
