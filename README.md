@@ -1,4 +1,4 @@
-# Expense Tracker
+# Expenses Tracker
 
 A Django web app for tracking expenses and organizing them by category.
 
@@ -9,8 +9,8 @@ You must accept the GitHub invitation to this repo before cloning.
 
 1. Clone the repo:
    ```bash
-   git clone https://github.com/<your-username>/expense-tracker.git
-   cd expense-tracker
+   git clone https://github.com/Orion379/expenses-tracker.git
+   cd expenses-tracker
    ```
 2. Create and activate a virtual environment:
    ```bash
