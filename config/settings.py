@@ -37,7 +37,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Project apps
+    "users",
+    "accounts",
+    "categories",
+    "expenses",
+    "income",
+    "budgets",
+    "recurring",
+    "wishlist",
+    "notifications",
 ]
+
+LOGIN_URL = "users:login"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
