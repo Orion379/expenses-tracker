@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in · ExpenseTracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="auth-page" data-page="login">
+    <div class="auth-decoration">
+        <div class="orb orb-one"></div>
+        <div class="orb orb-two"></div>
+        <div class="auth-caption"><span class="brand-mark">e</span>
+            <h2>Make room for<br>what matters.</h2>
+            <p>See your spending clearly. Plan with confidence.</p>
+        </div>
+    </div>
+    <main class="auth-main">
+        <div class="auth-card"><a class="brand auth-brand" href="login.html"><span
+                    class="brand-mark">e</span><span>expense<span class="brand-light">track</span></span></a>
+            <p class="eyebrow">WELCOME BACK</p>
+            <h1>Sign in to your account</h1>
+            <p class="muted">Your money, organized in one place.</p>
+            <form id="loginForm" class="auth-form"><label>Email or username<input name="identity"
+                        autocomplete="username" placeholder="Enter your email or username"
+                        required></label><label>Password<input name="password" type="password"
+                        autocomplete="current-password" placeholder="Enter your password" required></label><button
+                    class="btn btn-primary btn-full">Sign in</button>
+                <p class="form-feedback" id="authFeedback"></p>
+            </form>
+            <p class="auth-switch">New to ExpenseTrack? <a href="register.html">Create an account</a></p>
+            <p class="auth-note">Demo frontend: any non-empty credentials will sign you in. Connect Django
+                authentication for production.</p>
+        </div>
+    </main>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ExpenseTracker personal finance dashboard">
+  <title>Dashboard · ExpenseTracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body data-page="dashboard">
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar"><a class="brand" href="dashboard.html"><span
+                    class="brand-mark">e</span><span>expense<span class="brand-light">track</span></span></a>
+            <div class="workspace-label">WORKSPACE</div>
+            <nav><a class="nav-link " href="dashboard.html"><span>Dashboard</span></a>
+                <a class="nav-link " href="accounts.html"><span>Accounts</span></a>
+                <a class="nav-link " href="income.html"><span>Income</span></a>
+                <a class="nav-link " href="expenses.html"><span>Expenses</span></a>
+                <a class="nav-link active" href="categories.html"><span>Categories</span></a>
+                <a class="nav-link " href="budgets.html"><span>Budgets</span></a>
+                <a class="nav-link " href="recurring.html"><span>Recurring</span></a>
+                <a class="nav-link " href="wishlist.html">  <span>Wishlist</span></a>
+                <a class="nav-link " href="notifications.html"><span>Notifications</span><span class="nav-count"
+                        id="notificationCount">3</span></a>
+            </nav>
+            <div class="sidebar-bottom"><a class="nav-link" href="profile.html"><span
+                        class="nav-icon">⚙</span><span>Settings & profile</span></a><a class="nav-link logout-link"
+                    href="logout.html"><span class="nav-icon">↪</span><span>Sign out</span></a>
+                <div class="mini-user">
+                    <div class="avatar" id="sideAvatar">U</div>
+                    <div><strong id="sideName">Your account</strong><small id="sideEmail">Personal workspace</small>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    <main class="main-content">
+      <header class="topbar"><button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
+        <div class="breadcrumb">Workspace <span>/</span> <strong>Dashboard</strong></div>
+        <div class="top-actions"><button class="icon-btn" onclick="location.href='notifications.html'"
+            aria-label="Notifications">♧<i class="notification-dot"></i></button><a class="top-profile"
+            href="profile.html"><span class="avatar" id="topAvatar">U</span><span id="topName">Profile</span></a></div>
+      </header>
+      <div class="page-content">
+        <section class="welcome-row">
+          <div>
+            <p class="eyebrow">OVERVIEW</p>
+            <h2>Good to see you <span id="welcomeName">there</span> 👋</h2>
+            <p class="muted">Here’s what’s happening with your money.</p>
+          </div><button class="btn btn-primary" onclick="location.href='expenses.html'">＋ Add expense</button>
+        </section>
+        <section class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-top"><span>Total balance</span><span class="stat-icon">◈</span></div><strong
+              id="totalBalance">₦0.00</strong><small class="positive">Across all accounts</small>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Income this month</span><span class="stat-icon green">↗</span></div><strong
+              id="totalIncome">₦0.00</strong><small class="positive">Money received</small>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Expenses this month</span><span class="stat-icon orange">↘</span></div><strong
+              id="totalExpenses">₦0.00</strong><small class="muted">Money spent</small>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Budget remaining</span><span class="stat-icon purple">◷</span></div><strong
+              id="budgetRemaining">₦0.00</strong><small class="muted">From your monthly limits</small>
+          </article>
+        </section>
+        <section class="dashboard-grid">
+          <article class="panel span-2">
+            <div class="panel-heading">
+              <div>
+                <h3>Cash flow</h3>
+                <p class="muted">Income and expenses overview</p>
+              </div><span class="pill">This month</span>
+            </div>
+            <div class="chart-placeholder">
+              <div class="chart-y"><span>₦100k</span><span>₦75k</span><span>₦50k</span><span>₦25k</span><span>₦0</span>
+              </div>
+              <div class="chart-area">
+                <div class="chart-bars"><i style="height:38%"></i><i style="height:62%"></i><i style="height:45%"></i><i
+                    style="height:78%"></i><i style="height:55%"></i><i style="height:90%"></i><i
+                    style="height:68%"></i><i style="height:48%"></i><i style="height:75%"></i><i
+                    style="height:58%"></i><i style="height:83%"></i><i style="height:66%"></i></div>
+                <div class="chart-labels">
+                  <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+                </div>
+              </div>
+            </div>
+            <div class="legend"><span><i class="dot income-dot"></i> Income</span><span><i class="dot expense-dot"></i>
+                Expenses</span></div>
+          </article>
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <h3>Budget usage</h3>
+                <p class="muted">Your monthly spending limits</p>
+              </div><a href="budgets.html" class="text-link">View all</a>
+            </div>
+            <div id="budgetSummary" class="empty-state compact">No budgets yet. Create one to track your spending.</div>
+          </article>
+          <article class="panel span-2">
+            <div class="panel-heading">
+              <div>
+                <h3>Recent transactions</h3>
+                <p class="muted">Your latest financial activity</p>
+              </div><a href="expenses.html" class="text-link">View transactions →</a>
+            </div>
+            <div id="recentTransactions" class="empty-state">No transactions yet. Add your first income or expense.
+            </div>
+          </article>
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <h3>Quick actions</h3>
+              </div>
+            </div>
+            <div class="quick-actions"><a href="income.html">＋ Add income</a><a href="expenses.html">－ Add expense</a><a
+                href="budgets.html">◷ Create budget</a><a href="wishlist.html">♡ Add wishlist item</a></div>
+          </article>
+        </section>
+        <footer class="footer">© 2026 ExpenseTracker <span>Built to make every naira count.</span></footer>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
