@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +9,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body class="auth-page" data-page="login">
     <div class="auth-decoration">
@@ -20,23 +21,33 @@
         </div>
     </div>
     <main class="auth-main">
-        <div class="auth-card"><a class="brand auth-brand" href="login.html"><span
+        <div class="auth-card"><a class="brand auth-brand" href="{% url 'users:login' %}"><span
                     class="brand-mark">e</span><span>expense<span class="brand-light">track</span></span></a>
             <p class="eyebrow">WELCOME BACK</p>
             <h1>Sign in to your account</h1>
             <p class="muted">Your money, organized in one place.</p>
-            <form id="loginForm" class="auth-form"><label>Email or username<input name="identity"
-                        autocomplete="username" placeholder="Enter your email or username"
-                        required></label><label>Password<input name="password" type="password"
-                        autocomplete="current-password" placeholder="Enter your password" required></label><button
-                    class="btn btn-primary btn-full">Sign in</button>
+            <form id="loginForm" class="auth-form" method="post" action="{% url 'users:login' %}">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <p class="form-feedback">Invalid username or password</p>
+                {% endif %}
+                <label>Username<input name="username"
+                        autocomplete="username" value="{{ form.username.value|default_if_none:'' }}" placeholder="Enter your username"
+                        required>
+                </label>
+                <label>Password<input name="password" type="password"
+                        autocomplete="current-password" placeholder="Enter your password" required>
+                </label>
+                <input type="hidden" name="next" value="{{ next }}">
+                <button
+                    class="btn btn-primary btn-full" type="submit">Sign in
+                </button>
                 <p class="form-feedback" id="authFeedback"></p>
             </form>
-            <p class="auth-switch">New to ExpenseTrack? <a href="register.html">Create an account</a></p>
-            <p class="auth-note">Demo frontend: any non-empty credentials will sign you in. Connect Django
-                authentication for production.</p>
+            <p class="auth-switch">New to ExpenseTrack? <a href="{% url 'users:register' %}">Create an account</a></p>
+            <p class="auth-note">Sign in securely to your ExpenseTrack account.</p>
         </div>
     </main>
-    <script src="/static/js/app.js"></script>
+
 </body>
 </html>
