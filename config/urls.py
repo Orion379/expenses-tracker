@@ -17,6 +17,7 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from users import views as user_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -29,4 +30,5 @@ urlpatterns = [
     path("recurring/", include("recurring.urls")),
     path("wishlist/", include("wishlist.urls")),
     path("notifications/", include("notifications.urls")),
+    path("", user_views.dashboard, name="dashboard"),
 ]

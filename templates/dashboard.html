@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,18 +11,18 @@
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body data-page="dashboard">
   <div class="app-shell">
-    <aside class="sidebar" id="sidebar"><a class="brand" href="dashboard.html"><span
+    <aside class="sidebar" id="sidebar"><a class="brand" href="{% url 'dashboard' %}"><span
                     class="brand-mark">e</span><span>expense<span class="brand-light">track</span></span></a>
             <div class="workspace-label">WORKSPACE</div>
-            <nav><a class="nav-link " href="dashboard.html"><span>Dashboard</span></a>
+            <nav><a class="nav-link active" href="{% url 'dashboard' %}"><span>Dashboard</span></a>
                 <a class="nav-link " href="accounts.html"><span>Accounts</span></a>
                 <a class="nav-link " href="income.html"><span>Income</span></a>
                 <a class="nav-link " href="expenses.html"><span>Expenses</span></a>
-                <a class="nav-link active" href="categories.html"><span>Categories</span></a>
+                <a class="nav-link " href="categories.html"><span>Categories</span></a>
                 <a class="nav-link " href="budgets.html"><span>Budgets</span></a>
                 <a class="nav-link " href="recurring.html"><span>Recurring</span></a>
                 <a class="nav-link " href="wishlist.html">  <span>Wishlist</span></a>
@@ -29,11 +30,21 @@
                         id="notificationCount">3</span></a>
             </nav>
             <div class="sidebar-bottom"><a class="nav-link" href="profile.html"><span
-                        class="nav-icon">⚙</span><span>Settings & profile</span></a><a class="nav-link logout-link"
-                    href="logout.html"><span class="nav-icon">↪</span><span>Sign out</span></a>
+                        class="nav-icon">⚙</span><span>Settings & profile</span></a>
+                    <form method="post" action="{% url 'users:logout' %}">
+                        {% csrf_token %}
+                        <button
+                          type="submit"
+                          class="nav-link logout-link"
+                          style="width:100%;text-align:left;border:0;background:transparent;cursor:pointer;"
+                        >
+                        <span class="nav-icon">↪</span>
+                        <span>Sign out</span>
+                        </button>
+                    </form>
                 <div class="mini-user">
                     <div class="avatar" id="sideAvatar">U</div>
-                    <div><strong id="sideName">Your account</strong><small id="sideEmail">Personal workspace</small>
+                    <div><strong id="sideName">{{ request.user.username }}</strong><small id="sideEmail">{{ request.user.email }}</small>
                     </div>
                 </div>
             </div>
@@ -43,14 +54,25 @@
         <div class="breadcrumb">Workspace <span>/</span> <strong>Dashboard</strong></div>
         <div class="top-actions"><button class="icon-btn" onclick="location.href='notifications.html'"
             aria-label="Notifications">♧<i class="notification-dot"></i></button><a class="top-profile"
-            href="profile.html"><span class="avatar" id="topAvatar">U</span><span id="topName">Profile</span></a></div>
+            href="profile.html"><span class="avatar" id="topAvatar">{{ request.user.username|first|upper }}</span><span id="topName">{{ request.user.first_name|default:request.user.username }}</span></a>
+          <form method="post" action="{% url 'users:logout' %}" style="margin: 0; display: inline-flex;">
+            {% csrf_token %}
+            <button
+              type="submit"
+              class="btn btn-primary"
+              style="padding: 10px 14px; white-space: nowrap;">
+              Sign out
+            </button>
+          </form>
+        </div>
       </header>
       <div class="page-content">
         <section class="welcome-row">
           <div>
             <p class="eyebrow">OVERVIEW</p>
-            <h2>Good to see you <span id="welcomeName">there</span> 👋</h2>
+            <h2>Good to see you <span id="welcomeName">{{ request.user.first_name|default:request.user.username }}</span> 👋</h2>
             <p class="muted">Here’s what’s happening with your money.</p>
+            <p class="muted">Financial data integration is in progress.</p>
           </div><button class="btn btn-primary" onclick="location.href='expenses.html'">＋ Add expense</button>
         </section>
         <section class="stats-grid">
@@ -129,6 +151,6 @@
     </main>
   </div>
   <div class="toast" id="toast"></div>
-  <script src="/static/js/app.js"></script>
+  <!-- <script src="/static/js/app.js"></script>-->
 </body>
 </html>
