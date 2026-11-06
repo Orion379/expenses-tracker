@@ -28,3 +28,7 @@ def register(request):
 @login_required
 def welcome(request):
     return render(request, "users/welcome.html")
+
+@login_required
+def dashboard(request):
+    return render(request, "dashboard.html")

@@ -123,6 +123,7 @@ class AuthenticationTests(TestCase):
         self.username = "testloginuser"
         self.password = "StrongTestPassword#2026"
 
+
         self.user = get_user_model().objects.create_user(
             username=self.username,
             password=self.password,
@@ -132,6 +133,7 @@ class AuthenticationTests(TestCase):
         self.login_url = reverse("users:login")
         self.logout_url = reverse("users:logout")
         self.welcome_url = reverse("users:welcome")
+        self.dashboard_url = reverse("dashboard")
 
     def test_successful_login(self):
         response = self.client.post(
@@ -144,7 +146,7 @@ class AuthenticationTests(TestCase):
 
         self.assertRedirects(
             response,
-            self.welcome_url
+            self.dashboard_url
         )
 
         self.assertIn(
@@ -215,3 +217,19 @@ class AuthenticationTests(TestCase):
             "_auth_user_id",
             self.client.session
         )
+    def test_anonumous_user_cannot_access_dashboard(self):
+        response = self.client.get(self.dashboard_url)
+
+        self.assertRedirects(
+            response,
+            f"{self.login_url}?next={self.dashboard_url}"
+        )
+
+    def test_authenticated_user_can_access_dashboard(self):
+        self.client.force_login(self.user)
+
+        response = self.client.get(self.dashboard_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "dashboard.html")
+        self.assertContains(response, self.user.first_name)
