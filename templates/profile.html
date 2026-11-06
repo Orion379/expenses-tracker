@@ -10,7 +10,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body data-page="profile">
     <div class="app-shell">
@@ -89,6 +89,6 @@
         </main>
     </div>
     <div class="toast" id="toast"></div>
-    <script src="/static/js/app.js"></script>
+    <script src="{% static 'js/app.js' %}" defer></script>
 </body>
 </html>
