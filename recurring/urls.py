@@ -1,6 +1,8 @@
 from django.urls import path
 
-app_name = "recurring"
+from . import views
 
+app_name = "recurring"
 urlpatterns = [
+    path("", views.recurring_list, name="list"),
 ]
