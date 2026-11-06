@@ -1,3 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import RecurringExpense
+
+
+@admin.register(RecurringExpense)
+class RecurringExpenseAdmin(admin.ModelAdmin):
+    list_display = ("title", "amount", "frequency", "next_due_date", "user")
+    list_filter = ("frequency",)

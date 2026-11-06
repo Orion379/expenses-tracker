@@ -1,6 +1,8 @@
 from django.urls import path
 
-app_name = "budgets"
+from . import views
 
+app_name = "budgets"
 urlpatterns = [
+    path("", views.budget_list, name="list"),
 ]
