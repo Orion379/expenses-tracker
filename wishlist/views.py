@@ -1,17 +1,20 @@
-from django.shortcuts import render
-
-# Create your views here.
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-
+from config.crud import OwnedDeleteView, OwnedListCreateView
+from .forms import WishlistItemForm
 from .models import WishlistItem
 
 
-@login_required
-def wishlist_list(request):
-    items = (
-        WishlistItem.objects.filter(user=request.user)
-        .select_related("category", "expense")
-        .order_by("status", "-priority", "name")
-    )
-    return render(request, "wishlist.html", {"items": items})
+class WishlistPage(OwnedListCreateView):
+    model = WishlistItem
+    form_class = WishlistItemForm
+    template_name = "wishlist.html"
+    page = "wishlist"
+    singular = "wishlist item"
+    context_name = "items"
+    select_related = ("category", "expense")
+    order_by = ("status", "name")
+
+
+class WishlistDelete(OwnedDeleteView):
+    model = WishlistItem
+    success_url_name = "wishlist:list"
+    singular = "wishlist item"

@@ -1,14 +1,20 @@
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-
+from config.crud import OwnedDeleteView, OwnedListCreateView
+from .forms import RecurringExpenseForm
 from .models import RecurringExpense
 
 
-@login_required
-def recurring_list(request):
-    items = (
-        RecurringExpense.objects.filter(user=request.user)
-        .select_related("category", "account")
-        .order_by("next_due_date")
-    )
-    return render(request, "recurring.html", {"recurring_expenses": items})
+class RecurringPage(OwnedListCreateView):
+    model = RecurringExpense
+    form_class = RecurringExpenseForm
+    template_name = "recurring.html"
+    page = "recurring"
+    singular = "recurring expense"
+    context_name = "recurring_expenses"
+    select_related = ("category", "account")
+    order_by = ("next_due_date",)
+
+
+class RecurringDelete(OwnedDeleteView):
+    model = RecurringExpense
+    success_url_name = "recurring:list"
+    singular = "recurring expense"

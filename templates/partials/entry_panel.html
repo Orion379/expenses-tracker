@@ -1,0 +1,19 @@
+<div class="panel entry-panel" id="entryPanel" {% if not editing and not form.errors %}hidden{% endif %}>
+    <div class="panel-heading">
+        <div>
+            <h3>{% if editing %}Edit{% else %}{{ add_verb|default:"Add" }}{% endif %} {{ noun }}</h3>
+            <p class="muted">Complete the details below.</p>
+        </div><button class="icon-btn" id="closeForm" type="button" aria-label="Close" {% if editing %}data-list-url="{{ list_url }}"{% endif %}>✕</button>
+    </div>
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+        <div class="form-feedback" style="grid-column:1/-1;color:#b3261e">{% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}</div>
+        {% endif %}
+        {% for field in form %}
+        <label>{{ field.label }}{{ field }}{% if field.help_text %}<small class="muted" style="font-weight:400">{{ field.help_text }}</small>{% endif %}{% for error in field.errors %}<small style="color:#b3261e">{{ error }}</small>{% endfor %}</label>
+        {% endfor %}
+        <div class="form-actions"><button class="btn btn-primary" type="submit">Save record</button><button
+                type="button" class="btn btn-secondary" id="cancelForm" {% if editing %}data-list-url="{{ list_url }}"{% endif %}>Cancel</button></div>
+    </form>
+</div>

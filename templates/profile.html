@@ -1,52 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="ExpenseTracker personal finance dashboard">
-    <title>My profile · ExpenseTracker</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-</head>
-<body data-page="profile">
-    <div class="app-shell">
-        <aside class="sidebar" id="sidebar"><a class="brand" href="dashboard.html"><span
-                    class="brand-mark">e</span><span>expense<span class="brand-light">track</span></span></a>
-            <div class="workspace-label">WORKSPACE</div>
-            <nav><a class="nav-link " href="dashboard.html"><span>Dashboard</span></a>
-                <a class="nav-link " href="accounts.html"><span>Accounts</span></a>
-                <a class="nav-link " href="income.html"><span>Income</span></a>
-                <a class="nav-link " href="expenses.html"><span>Expenses</span></a>
-                <a class="nav-link active" href="categories.html"><span>Categories</span></a>
-                <a class="nav-link " href="budgets.html"><span>Budgets</span></a>
-                <a class="nav-link " href="recurring.html"><span>Recurring</span></a>
-                <a class="nav-link " href="wishlist.html">  <span>Wishlist</span></a>
-                <a class="nav-link " href="notifications.html"><span>Notifications</span><span class="nav-count"
-                        id="notificationCount">3</span></a>
-            </nav>
-            <div class="sidebar-bottom"><a class="nav-link" href="profile.html"><span
-                        class="nav-icon">⚙</span><span>Settings & profile</span></a><a class="nav-link logout-link"
-                    href="logout.html"><span class="nav-icon">↪</span><span>Sign out</span></a>
-                <div class="mini-user">
-                    <div class="avatar" id="sideAvatar">U</div>
-                    <div><strong id="sideName">Your account</strong><small id="sideEmail">Personal workspace</small>
-                    </div>
-                </div>
-            </div>
-        </aside>
-        <main class="main-content">
-            <header class="topbar"><button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
-                <div class="breadcrumb">Workspace <span>/</span> <strong>My profile</strong></div>
-                <div class="top-actions"><button class="icon-btn" onclick="location.href='notifications.html'"
-                        aria-label="Notifications">♧<i class="notification-dot"></i></button><a class="top-profile"
-                        href="profile.html"><span class="avatar" id="topAvatar">U</span><span
-                            id="topName">Profile</span></a></div>
-            </header>
-            <div class="page-content">
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+{% block crumb %}Profile{% endblock %}
+{% block content %}
                 <section class="page-intro">
                     <div>
                         <p class="eyebrow">ACCOUNT</p>
@@ -56,39 +11,30 @@
                 </section>
                 <div class="panel form-panel">
                     <div class="profile-banner">
-                        <div class="avatar large" id="profileAvatar">U</div>
+                        <div class="avatar large" id="profileAvatar">{{ request.user.username|first|upper }}</div>
                         <div>
-                            <h3 id="profileDisplayName">Your profile</h3>
-                            <p class="muted" id="profileEmail">your@email.com</p>
+                            <h3 id="profileDisplayName">{{ request.user.get_full_name|default:request.user.username }}</h3>
+                            <p class="muted" id="profileEmail">{{ request.user.email|default:"No email saved yet" }}</p>
                         </div>
                     </div>
-                    <form id="profileForm" class="form-grid"><label>Full name<input name="name" id="profileName"
-                                placeholder="Your full name" required></label><label>Email address<input name="email"
-                                id="profileEmailInput" type="email" placeholder="you@example.com"
-                                required></label><label>Username<input name="username" id="profileUsername"
-                                placeholder="username"></label><label>Preferred currency<select name="currency"
-                                id="profileCurrency">
-                                <option value="NGN">NGN — Nigerian Naira (₦)</option>
-                                <option value="USD">USD — US Dollar ($)</option>
-                                <option value="GBP">GBP — British Pound (£)</option>
-                            </select></label>
-                        <div class="form-actions"><button class="btn btn-primary">Save changes</button><span
-                                class="form-feedback" id="profileFeedback"></span></div>
+                    <form id="profileForm" method="post" class="form-grid">
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                        <div class="form-feedback" style="grid-column:1/-1;color:#b3261e">{% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}</div>
+                        {% endif %}
+                        {% for field in form %}
+                        <label>{{ field.label }}{{ field }}{% for error in field.errors %}<small style="color:#b3261e">{{ error }}</small>{% endfor %}</label>
+                        {% endfor %}
+                        <label>Username<input value="{{ request.user.username }}" disabled></label>
+                        <div class="form-actions"><button class="btn btn-primary" type="submit">Save changes</button></div>
                     </form>
                 </div>
                 <div class="panel form-panel">
                     <h3>Appearance</h3>
                     <p class="muted">Choose the accent theme for your workspace.</p>
-                    <div class="theme-options"><button class="theme-choice" data-theme="ocean"><i
-                                class="swatch ocean"></i>Ocean</button><button class="theme-choice"
-                            data-theme="forest"><i class="swatch forest"></i>Forest</button><button class="theme-choice"
+                    <div class="theme-options"><button class="theme-choice" type="button" data-theme="ocean"><i
+                                class="swatch ocean"></i>Ocean</button><button class="theme-choice" type="button"
+                            data-theme="forest"><i class="swatch forest"></i>Forest</button><button class="theme-choice" type="button"
                             data-theme="plum"><i class="swatch plum"></i>Plum</button></div>
                 </div>
-                <footer class="footer">© 2026 ExpenseTracker <span>Built to make every naira count.</span></footer>
-            </div>
-        </main>
-    </div>
-    <div class="toast" id="toast"></div>
-    <script src="{% static 'js/app.js' %}" defer></script>
-</body>
-</html>
+{% endblock %}

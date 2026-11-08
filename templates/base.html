@@ -1,0 +1,61 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ExpenseTracker personal finance dashboard">
+    <title>{% block title %}ExpenseTracker{% endblock %} · ExpenseTracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body data-page="{{ page }}">
+    <div class="app-shell">
+        <aside class="sidebar" id="sidebar"><a class="brand" href="{% url 'dashboard' %}"><span
+                    class="brand-mark">e</span><span>expense<span class="brand-light">track</span></span></a>
+            <div class="workspace-label">WORKSPACE</div>
+            <nav><a class="nav-link {% if page == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}"><span>Dashboard</span></a>
+                <a class="nav-link {% if page == 'accounts' %}active{% endif %}" href="{% url 'accounts:list' %}"><span>Accounts</span></a>
+                <a class="nav-link {% if page == 'income' %}active{% endif %}" href="{% url 'income:list' %}"><span>Income</span></a>
+                <a class="nav-link {% if page == 'expenses' %}active{% endif %}" href="{% url 'expenses:list' %}"><span>Expenses</span></a>
+                <a class="nav-link {% if page == 'categories' %}active{% endif %}" href="{% url 'categories:list' %}"><span>Categories</span></a>
+                <a class="nav-link {% if page == 'budgets' %}active{% endif %}" href="{% url 'budgets:list' %}"><span>Budgets</span></a>
+                <a class="nav-link {% if page == 'recurring' %}active{% endif %}" href="{% url 'recurring:list' %}"><span>Recurring</span></a>
+                <a class="nav-link {% if page == 'wishlist' %}active{% endif %}" href="{% url 'wishlist:list' %}"><span>Wishlist</span></a>
+                <a class="nav-link {% if page == 'notifications' %}active{% endif %}" href="{% url 'notifications:list' %}"><span>Notifications</span>{% if unread_notifications %}<span class="nav-count" id="notificationCount">{{ unread_notifications }}</span>{% endif %}</a>
+            </nav>
+            <div class="sidebar-bottom"><a class="nav-link {% if page == 'profile' %}active{% endif %}" href="{% url 'profile' %}"><span
+                        class="nav-icon">⚙</span><span>Settings &amp; profile</span></a><a class="nav-link logout-link"
+                    href="{% url 'users:logout_confirm' %}"><span class="nav-icon">↪</span><span>Sign out</span></a>
+                <div class="mini-user">
+                    <div class="avatar" id="sideAvatar">{{ request.user.username|first|upper }}</div>
+                    <div><strong id="sideName">{{ request.user.first_name|default:request.user.username }}</strong><small id="sideEmail">{{ request.user.email|default:"Personal workspace" }}</small>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <main class="main-content">
+            <header class="topbar"><button class="menu-toggle" id="menuToggle" type="button" aria-label="Toggle menu">☰</button>
+                <div class="breadcrumb">Workspace <span>/</span> <strong>{% block crumb %}{% endblock %}</strong></div>
+                <div class="top-actions"><a class="icon-btn" href="{% url 'notifications:list' %}" aria-label="Notifications" style="text-decoration:none">♧{% if unread_notifications %}<i class="notification-dot"></i>{% endif %}</a><a class="top-profile"
+                        href="{% url 'profile' %}"><span class="avatar" id="topAvatar">{{ request.user.username|first|upper }}</span><span
+                            id="topName">{{ request.user.first_name|default:request.user.username }}</span></a>
+                    <form method="post" action="{% url 'users:logout' %}" style="margin: 0; display: inline-flex;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary" style="padding: 10px 14px; white-space: nowrap;">Sign out</button>
+                    </form>
+                </div>
+            </header>
+            <div class="page-content">
+                {% for message in messages %}
+                <div class="panel" role="status" style="padding:12px 16px;margin-bottom:14px;border-color:{% if message.tags == 'error' %}#f0c4c4{% else %}#cfe8dc{% endif %}">{{ message }}</div>
+                {% endfor %}
+                {% block content %}{% endblock %}
+                <footer class="footer">© 2026 ExpenseTracker <span>Built to make every naira count.</span></footer>
+            </div>
+        </main>
+    </div>
+    <script src="{% static 'js/page.js' %}" defer></script>
+</body>
+</html>
