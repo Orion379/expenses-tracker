@@ -31,4 +31,5 @@ urlpatterns = [
     path("wishlist/", include("wishlist.urls")),
     path("notifications/", include("notifications.urls")),
     path("", user_views.dashboard, name="dashboard"),
+    path("profile/", user_views.profile, name="profile"), 
 ]

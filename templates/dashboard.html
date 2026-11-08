@@ -1,140 +1,86 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="ExpenseTracker personal finance dashboard">
-  <title>Dashboard · ExpenseTracker</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-</head>
-<body data-page="dashboard">
-  <div class="app-shell">
-    <aside class="sidebar" id="sidebar"><a class="brand" href="{% url 'dashboard' %}"><span
-                    class="brand-mark">e</span><span>expense<span class="brand-light">track</span></span></a>
-            <div class="workspace-label">WORKSPACE</div>
-            <nav><a class="nav-link active" href="{% url 'dashboard' %}"><span>Dashboard</span></a>
-                <a class="nav-link " href="accounts.html"><span>Accounts</span></a>
-                <a class="nav-link " href="income.html"><span>Income</span></a>
-                <a class="nav-link " href="expenses.html"><span>Expenses</span></a>
-                <a class="nav-link " href="categories.html"><span>Categories</span></a>
-                <a class="nav-link " href="budgets.html"><span>Budgets</span></a>
-                <a class="nav-link " href="recurring.html"><span>Recurring</span></a>
-                <a class="nav-link " href="wishlist.html">  <span>Wishlist</span></a>
-                <a class="nav-link " href="notifications.html"><span>Notifications</span><span class="nav-count"
-                        id="notificationCount">3</span></a>
-            </nav>
-            <div class="sidebar-bottom"><a class="nav-link" href="profile.html"><span
-                        class="nav-icon">⚙</span><span>Settings & profile</span></a>
-                    <form method="post" action="{% url 'users:logout' %}">
-                        {% csrf_token %}
-                        <button
-                          type="submit"
-                          class="nav-link logout-link"
-                          style="width:100%;text-align:left;border:0;background:transparent;cursor:pointer;"
-                        >
-                        <span class="nav-icon">↪</span>
-                        <span>Sign out</span>
-                        </button>
-                    </form>
-                <div class="mini-user">
-                    <div class="avatar" id="sideAvatar">U</div>
-                    <div><strong id="sideName">{{ request.user.username }}</strong><small id="sideEmail">{{ request.user.email }}</small>
-                    </div>
-                </div>
-            </div>
-        </aside>
-    <main class="main-content">
-      <header class="topbar"><button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
-        <div class="breadcrumb">Workspace <span>/</span> <strong>Dashboard</strong></div>
-        <div class="top-actions"><button class="icon-btn" onclick="location.href='notifications.html'"
-            aria-label="Notifications">♧<i class="notification-dot"></i></button><a class="top-profile"
-            href="profile.html"><span class="avatar" id="topAvatar">{{ request.user.username|first|upper }}</span><span id="topName">{{ request.user.first_name|default:request.user.username }}</span></a>
-          <form method="post" action="{% url 'users:logout' %}" style="margin: 0; display: inline-flex;">
-            {% csrf_token %}
-            <button
-              type="submit"
-              class="btn btn-primary"
-              style="padding: 10px 14px; white-space: nowrap;">
-              Sign out
-            </button>
-          </form>
-        </div>
-      </header>
-      <div class="page-content">
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block crumb %}Dashboard{% endblock %}
+{% block content %}
         <section class="welcome-row">
           <div>
             <p class="eyebrow">OVERVIEW</p>
             <h2>Good to see you <span id="welcomeName">{{ request.user.first_name|default:request.user.username }}</span> 👋</h2>
-            <p class="muted">Here’s what’s happening with your money.</p>
-            <p class="muted">Financial data integration is in progress.</p>
-          </div><button class="btn btn-primary" onclick="location.href='expenses.html'">＋ Add expense</button>
+            <p class="muted">Here's what's happening with your money.</p>
+          </div><a class="btn btn-primary" href="{% url 'expenses:list' %}" style="text-decoration:none">＋ Add expense</a>
         </section>
         <section class="stats-grid">
           <article class="stat-card">
             <div class="stat-top"><span>Total balance</span><span class="stat-icon">◈</span></div><strong
-              id="totalBalance">₦0.00</strong><small class="positive">Across all accounts</small>
+              id="totalBalance">{{ total_balance }}</strong><small class="positive">Across all accounts</small>
           </article>
           <article class="stat-card">
             <div class="stat-top"><span>Income this month</span><span class="stat-icon green">↗</span></div><strong
-              id="totalIncome">₦0.00</strong><small class="positive">Money received</small>
+              id="totalIncome">{{ income_month }}</strong><small class="positive">Money received</small>
           </article>
           <article class="stat-card">
             <div class="stat-top"><span>Expenses this month</span><span class="stat-icon orange">↘</span></div><strong
-              id="totalExpenses">₦0.00</strong><small class="muted">Money spent</small>
+              id="totalExpenses">{{ expenses_month }}</strong><small class="muted">Money spent</small>
           </article>
           <article class="stat-card">
             <div class="stat-top"><span>Budget remaining</span><span class="stat-icon purple">◷</span></div><strong
-              id="budgetRemaining">₦0.00</strong><small class="muted">From your monthly limits</small>
+              id="budgetRemaining">{{ budget_remaining }}</strong><small class="muted">From this month's limits</small>
           </article>
         </section>
         <section class="dashboard-grid">
           <article class="panel span-2">
             <div class="panel-heading">
               <div>
-                <h3>Cash flow</h3>
-                <p class="muted">Income and expenses overview</p>
-              </div><span class="pill">This month</span>
+                <h3>Spending overview</h3>
+                <p class="muted">Your expenses, month by month</p>
+              </div><span class="pill">{{ chart_year }}</span>
             </div>
             <div class="chart-placeholder">
-              <div class="chart-y"><span>₦100k</span><span>₦75k</span><span>₦50k</span><span>₦25k</span><span>₦0</span>
+              <div class="chart-y">{% for label in chart_axis %}<span>{{ label }}</span>{% endfor %}
               </div>
               <div class="chart-area">
-                <div class="chart-bars"><i style="height:38%"></i><i style="height:62%"></i><i style="height:45%"></i><i
-                    style="height:78%"></i><i style="height:55%"></i><i style="height:90%"></i><i
-                    style="height:68%"></i><i style="height:48%"></i><i style="height:75%"></i><i
-                    style="height:58%"></i><i style="height:83%"></i><i style="height:66%"></i></div>
+                <div class="chart-bars">{% for m in chart %}<i style="height:{{ m.height }}%" title="{{ m.label }}: {{ m.amount }}"></i>{% endfor %}</div>
                 <div class="chart-labels">
-                  <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+                  {% for m in chart %}<span>{{ m.label }}</span>{% endfor %}
                 </div>
               </div>
             </div>
-            <div class="legend"><span><i class="dot income-dot"></i> Income</span><span><i class="dot expense-dot"></i>
-                Expenses</span></div>
+            <div class="legend"><span><i class="dot expense-dot"></i> Expenses</span></div>
           </article>
           <article class="panel">
             <div class="panel-heading">
               <div>
                 <h3>Budget usage</h3>
                 <p class="muted">Your monthly spending limits</p>
-              </div><a href="budgets.html" class="text-link">View all</a>
+              </div><a href="{% url 'budgets:list' %}" class="text-link">View all</a>
             </div>
+            {% if budget_rows %}
+            <div id="budgetSummary">
+              {% for b in budget_rows %}
+              <div style="margin:15px 0"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:7px"><strong>{{ b.category }}</strong><span>{{ b.spent }} / {{ b.limit }}</span></div><div style="height:7px;border-radius:9px;background:#edf2ef;overflow:hidden"><div style="width:{{ b.bar }}%;height:100%;background:{% if b.percent >= 100 %}var(--danger){% elif b.percent >= 80 %}var(--orange){% else %}var(--green){% endif %};border-radius:9px"></div></div></div>
+              {% endfor %}
+            </div>
+            {% else %}
             <div id="budgetSummary" class="empty-state compact">No budgets yet. Create one to track your spending.</div>
+            {% endif %}
           </article>
           <article class="panel span-2">
             <div class="panel-heading">
               <div>
                 <h3>Recent transactions</h3>
                 <p class="muted">Your latest financial activity</p>
-              </div><a href="expenses.html" class="text-link">View transactions →</a>
+              </div><a href="{% url 'expenses:list' %}" class="text-link">View transactions →</a>
             </div>
+            {% if recent %}
+            <div id="recentTransactions" class="notification-list">
+              {% for t in recent %}
+              <div class="notification-item"><div class="notification-mark">{% if t.income %}↗{% else %}↘{% endif %}</div><div style="flex:1"><p><strong>{{ t.title }}</strong></p><small>{{ t.kind }} · {{ t.date|date:"d M Y" }}</small></div><strong>{{ t.amount }}</strong></div>
+              {% endfor %}
+            </div>
+            {% else %}
             <div id="recentTransactions" class="empty-state">No transactions yet. Add your first income or expense.
             </div>
+            {% endif %}
           </article>
           <article class="panel">
             <div class="panel-heading">
@@ -142,15 +88,8 @@
                 <h3>Quick actions</h3>
               </div>
             </div>
-            <div class="quick-actions"><a href="income.html">＋ Add income</a><a href="expenses.html">－ Add expense</a><a
-                href="budgets.html">◷ Create budget</a><a href="wishlist.html">♡ Add wishlist item</a></div>
+            <div class="quick-actions"><a href="{% url 'income:list' %}">＋ Add income</a><a href="{% url 'expenses:list' %}">－ Add expense</a><a
+                href="{% url 'budgets:list' %}"> Create budget</a><a href="{% url 'wishlist:list' %}">Add wishlist item</a></div>
           </article>
         </section>
-        <footer class="footer">© 2026 ExpenseTracker <span>Built to make every naira count.</span></footer>
-      </div>
-    </main>
-  </div>
-  <div class="toast" id="toast"></div>
-  <!-- <script src="/static/js/app.js"></script>-->
-</body>
-</html>
+{% endblock %}

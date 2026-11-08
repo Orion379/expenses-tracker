@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,11 +25,10 @@
             <div class="logout-symbol">↗</div>
             <p class="eyebrow">SEE YOU SOON</p>
             <h1>Sign out of ExpenseTrack?</h1>
-            <p class="muted">Your local demo session will be cleared. You can sign back in anytime.</p>
-            <div class="logout-actions"><button class="btn btn-primary btn-full" id="confirmLogout">Yes, sign me
-                    out</button><a class="btn btn-secondary btn-full" href="dashboard.html">Stay signed in</a></div>
+            <p class="muted"> You can sign back in anytime.</p>
+            <div class="logout-actions"><form method="post" action="{% url 'users:logout' %}" style="margin:0">{% csrf_token %}<button class="btn btn-primary btn-full" id="confirmLogout" type="submit" style="width:100%">Yes, sign me out</button></form><a class="btn btn-secondary btn-full" href="{% url 'dashboard' %}">Stay signed in</a></div>
         </div>
     </main>
-    <script src="{% static 'js/app.js' %}" defer></script>
+    <script src="{% static 'js/page.js' %}" defer></script>
 </body>
 </html>
