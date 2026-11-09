@@ -28,7 +28,10 @@ class RegistrationTests(TestCase):
             self.valid_data
         )
 
-        self.assertRedirects(response, self.url)
+        self.assertRedirects(response, reverse("dashboard"))
+
+        # new user is signed in after registration
+        self.assertIn("_auth_user_id", self.client.session)
 
         User = get_user_model()
         user = User.objects.get(username="testperson001")
