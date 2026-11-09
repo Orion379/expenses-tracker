@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 import calendar
 from decimal import Decimal
+from django.contrib.auth import login
 
 from django.db.models import Sum
 from django.db.models.functions import ExtractMonth
@@ -21,12 +22,13 @@ def register(request):
         form = RegistrationForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            user = form.save()
+            login(request, user)
             messages.success(
                 request,
                 "Your account was created successfully."
             )
-            return redirect("users:register")
+            return redirect("dashboard")
 
     else:
         form = RegistrationForm()
@@ -54,35 +56,47 @@ def compact_money(value):
 def dashboard(request):
     user = request.user
     today = timezone.localdate()
+    zero = Decimal("0")
 
-    def total(queryset):
-        return queryset.aggregate(total=Sum("amount"))["total"] or Decimal("0")
+    # Every figure below is computed by the database (SUM / GROUP BY), not by looping in Python.
+    total_balance = Account.objects.filter(user=user).aggregate(
+        total=Sum("balance", default=zero)
+    )["total"]
+    income_month = Income.objects.filter(
+        user=user, date__year=today.year, date__month=today.month
+    ).aggregate(total=Sum("amount", default=zero))["total"]
 
-    month_filter = {"date__year": today.year, "date__month": today.month}
-    total_balance = Account.objects.filter(user=user).aggregate(total=Sum("balance"))["total"] or Decimal("0")
-    income_month = total(Income.objects.filter(user=user, **month_filter))
-    expenses_month = total(Expense.objects.filter(user=user, **month_filter))
+    # One grouped query: this month's spending per category.
+    spent_by_category = {
+        row["category"]: row["total"]
+        for row in Expense.objects.filter(
+            user=user, date__year=today.year, date__month=today.month
+        ).values("category").annotate(total=Sum("amount"))
+    }
+    expenses_month = sum(spent_by_category.values(), zero)
 
+    # Budget usage reuses the grouped result, so it needs no extra query per budget.
     budget_rows = []
-    limit_sum = Decimal("0")
-    spent_sum = Decimal("0")
+    limit_sum = zero
+    spent_sum = zero
     this_month = Budget.objects.filter(
         user=user, month=today.replace(day=1)
     ).select_related("category")
     for budget in this_month:
-        spent = total(Expense.objects.filter(user=user, category=budget.category, **month_filter))
+        spent = spent_by_category.get(budget.category_id, zero)
         limit_sum += budget.limit_amount
         spent_sum += spent
+        percent = int(spent / budget.limit_amount * 100) if budget.limit_amount else 0
         budget_rows.append({
             "category": budget.category.name,
             "spent": money(spent),
             "limit": money(budget.limit_amount),
-            "percent": int(spent / budget.limit_amount * 100) if budget.limit_amount else 0,
-            "bar": min(int(spent / budget.limit_amount * 100), 100) if budget.limit_amount else 0,
+            "percent": percent,
+            "bar": min(percent, 100),
         })
 
-    # Spending per month for the current year (drives the bar chart)
-    per_month = {m: Decimal("0") for m in range(1, 13)}
+    # One grouped query: spending per month for the current year (drives the bar chart).
+    per_month = {m: zero for m in range(1, 13)}
     yearly = (
         Expense.objects.filter(user=user, date__year=today.year)
         .annotate(month=ExtractMonth("date"))
